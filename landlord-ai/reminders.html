@@ -40,9 +40,91 @@
     </table>
   </main>
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="firebase-config.js"></script>
+
+  <!-- Firebase Config and Init -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCozdGGtbY5VQeDxSs8Vo5IqX5nqTAEVcw",
+      authDomain: "ai-for-small-plot-landlords.firebaseapp.com",
+      projectId: "ai-for-small-plot-landlords",
+      storageBucket: "ai-for-small-plot-landlords.appspot.com",
+      messagingSenderId: "657855602798",
+      appId: "1:657855602798:web:3009f2e383ce67e54fc67f",
+      measurementId: "G-D2HJ54T08M"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Page Script -->
+  <script src="reminders.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reminders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>⏰ Rent Reminders</header>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="reminders.html">Reminders</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <main>
+    <h2>Due Soon & Overdue</h2>
+
+    <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem;">
+      <label><input type="checkbox" id="showDueSoon" checked> Show Due Soon (≤ 3 days)</label>
+      <label><input type="checkbox" id="showOverdue" checked> Show Overdue</label>
+      <input id="search" placeholder="Search name or house…" style="flex:1; padding:0.6rem; border:1px solid #ccc; border-radius:6px;">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>House</th>
+          <th>Rent</th>
+          <th>Phone</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Days</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="reminderList"></tbody>
+    </table>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
+  <!-- Firebase Config and Init -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCozdGGtbY5VQeDxSs8Vo5IqX5nqTAEVcw",
+      authDomain: "ai-for-small-plot-landlords.firebaseapp.com",
+      projectId: "ai-for-small-plot-landlords",
+      storageBucket: "ai-for-small-plot-landlords.appspot.com",
+      messagingSenderId: "657855602798",
+      appId: "1:657855602798:web:3009f2e383ce67e54fc67f",
+      measurementId: "G-D2HJ54T08M"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Page Script -->
   <script src="reminders.js"></script>
 </body>
 </html>
