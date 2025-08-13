@@ -44,7 +44,65 @@
     </table>
   </main>
 
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="tenants.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
+      authDomain: "landlady-63b0b.firebaseapp.com",
+      projectId: "landlady-63b0b",
+      storageBucket: "landlady-63b0b.firebasestorage.app",
+      messagingSenderId: "596849789967",
+      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
+      measurementId: "G-8YKC8R3VRR"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const tenantForm = document.getElementById('tenantForm');
+    const tenantList = document.getElementById('tenantList');
+
+    tenantForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "tenants"), {
+          name: document.getElementById('name').value,
+          house_number: document.getElementById('house_number').value,
+          rent_amount: Number(document.getElementById('rent_amount').value),
+          phone_number: document.getElementById('phone_number').value,
+          due_date: document.getElementById('due_date').value,
+          status: document.getElementById('status').value
+        });
+        tenantForm.reset();
+        loadTenants();
+      } catch (err) {
+        console.error("Error adding tenant: ", err);
+      }
+    });
+
+    async function loadTenants() {
+      tenantList.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "tenants"));
+      snapshot.forEach(doc => {
+        const t = doc.data();
+        tenantList.innerHTML += `
+          <tr>
+            <td>${t.name}</td>
+            <td>${t.house_number}</td>
+            <td>${t.rent_amount}</td>
+            <td>${t.phone_number}</td>
+            <td>${t.due_date}</td>
+            <td class="${t.status.toLowerCase() === 'paid' ? 'status-paid' : 'status-unpaid'}">${t.status}</td>
+          </tr>
+        `;
+      });
+    }
+
+    loadTenants();
+  </script>
 </body>
 </html>
