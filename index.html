@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Kemotho the LandLady Dashboard</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>🏠 Landlord Dashboard</header>
+  <header>📊 Dashboard</header>
   <nav>
     <a href="index.html">Dashboard</a>
     <a href="tenants.html">Tenants</a>
@@ -14,16 +14,48 @@
     <a href="reports.html">Reports</a>
   </nav>
   <main>
-    <h2>Overview</h2>
-    <p>Total Tenants: <span id="totalTenants">0</span></p>
-    <p>Total Rent: Ksh <span id="totalRent">0</span></p>
-    <p>Due Soon: <span id="dueSoon">0</span></p>
-    <p>Overdue: <span id="overdue">0</span></p>
+    <h2>Quick Stats</h2>
+    <div class="stats">
+      <div>Total Tenants: <span id="totalTenants">0</span></div>
+      <div>Paid: <span id="paidCount">0</span></div>
+      <div>Unpaid: <span id="unpaidCount">0</span></div>
+    </div>
   </main>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="firebase-config.js"></script>
-  <script src="index.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
+      authDomain: "landlady-63b0b.firebaseapp.com",
+      projectId: "landlady-63b0b",
+      storageBucket: "landlady-63b0b.firebasestorage.app",
+      messagingSenderId: "596849789967",
+      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
+      measurementId: "G-8YKC8R3VRR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadStats() {
+      const snapshot = await getDocs(collection(db, "tenants"));
+      let total = 0, paid = 0, unpaid = 0;
+
+      snapshot.forEach(doc => {
+        total++;
+        const data = doc.data();
+        if (data.status.toLowerCase() === "paid") paid++;
+        else unpaid++;
+      });
+
+      document.getElementById("totalTenants").textContent = total;
+      document.getElementById("paidCount").textContent = paid;
+      document.getElementById("unpaidCount").textContent = unpaid;
+    }
+
+    loadStats();
+  </script>
 </body>
 </html>
