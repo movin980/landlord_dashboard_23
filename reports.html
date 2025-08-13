@@ -15,49 +15,28 @@
     <a href="reports.html">Reports</a>
   </nav>
   <main>
-    <h2>Rent Status Overview</h2>
-    <canvas id="rentChart" width="400" height="200"></canvas>
+    <h2>Rent Collection Overview</h2>
+    <canvas id="rentChart" style="width:100%; max-width:600px;"></canvas>
   </main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
-      authDomain: "landlady-63b0b.firebaseapp.com",
-      projectId: "landlady-63b0b",
-      storageBucket: "landlady-63b0b.firebasestorage.app",
-      messagingSenderId: "596849789967",
-      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
-      measurementId: "G-8YKC8R3VRR"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadChart() {
-      let paid = 0, unpaid = 0;
-      const snapshot = await getDocs(collection(db, "tenants"));
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.status.toLowerCase() === "paid") paid++;
-        else unpaid++;
-      });
-
-      new Chart(document.getElementById('rentChart'), {
-        type: 'pie',
-        data: {
-          labels: ['Paid', 'Unpaid'],
-          datasets: [{
-            data: [paid, unpaid],
-            backgroundColor: ['#4CAF50', '#F44336']
-          }]
-        }
-      });
-    }
-
-    loadChart();
+  <script type="module" src="firebase-config.js"></script>
+  <script>
+    const ctx = document.getElementById('rentChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Rent Collected',
+          data: [1200, 1900, 3000, 2500, 3200, 4000],
+          backgroundColor: '#4CAF50'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
   </script>
 </body>
 </html>
