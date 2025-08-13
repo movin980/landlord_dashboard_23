@@ -15,28 +15,97 @@
     <a href="reports.html">Reports</a>
   </nav>
   <main>
-    <h2>Rent Collection Overview</h2>
-    <canvas id="rentChart" style="width:100%; max-width:600px;"></canvas>
+    <h2>Rent Status Overview</h2>
+    <canvas id="rentChart" width="400" height="200"></canvas>
+
+    <h2>Monthly Rent Collection</h2>
+    <canvas id="monthlyChart" width="400" height="200"></canvas>
   </main>
 
-  <script type="module" src="firebase-config.js"></script>
-  <script>
-    const ctx = document.getElementById('rentChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: 'Rent Collected',
-          data: [1200, 1900, 3000, 2500, 3200, 4000],
-          backgroundColor: '#4CAF50'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
+      authDomain: "landlady-63b0b.firebaseapp.com",
+      projectId: "landlady-63b0b",
+      storageBucket: "landlady-63b0b.firebasestorage.app",
+      messagingSenderId: "596849789967",
+      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
+      measurementId: "G-8YKC8R3VRR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadCharts() {
+      let paid = 0, unpaid = 0;
+      let monthlyData = {};
+
+      const snapshot = await getDocs(collection(db, "tenants"));
+      snapshot.forEach(doc => {
+        const data = doc.data();
+
+        // Pie chart counts
+        if (data.status.toLowerCase() === "paid") paid++;
+        else unpaid++;
+
+        // Monthly trend
+        const dueDate = new Date(data.due_date);
+        const monthKey = dueDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+
+        if (!monthlyData[monthKey]) {
+          monthlyData[monthKey] = { paid: 0, unpaid: 0 };
+        }
+        if (data.status.toLowerCase() === "paid") {
+          monthlyData[monthKey].paid++;
+        } else {
+          monthlyData[monthKey].unpaid++;
+        }
+      });
+
+      // Pie chart
+      new Chart(document.getElementById('rentChart'), {
+        type: 'pie',
+        data: {
+          labels: ['Paid', 'Unpaid'],
+          datasets: [{
+            data: [paid, unpaid],
+            backgroundColor: ['#4CAF50', '#F44336']
+          }]
+        }
+      });
+
+      // Line chart data
+      const months = Object.keys(monthlyData).sort((a, b) => new Date(a) - new Date(b));
+      const paidSeries = months.map(m => monthlyData[m].paid);
+      const unpaidSeries = months.map(m => monthlyData[m].unpaid);
+
+      new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: 'Paid',
+              data: paidSeries,
+              borderColor: '#4CAF50',
+              fill: false
+            },
+            {
+              label: 'Unpaid',
+              data: unpaidSeries,
+              borderColor: '#F44336',
+              fill: false
+            }
+          ]
+        }
+      });
+    }
+
+    loadCharts();
   </script>
 </body>
 </html>
+
