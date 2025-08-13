@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tenants</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>🏠 Tenant Management</header>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="reminders.html">Reminders</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+  <main>
+    <h2>Add Tenant</h2>
+    <form id="tenantForm">
+      <input type="text" id="name" placeholder="Tenant Name" required>
+      <input type="text" id="house_number" placeholder="House Number" required>
+      <input type="number" id="rent_amount" placeholder="Rent Amount" required>
+      <input type="text" id="phone_number" placeholder="Phone Number" required>
+      <input type="date" id="due_date" required>
+      <select id="status">
+        <option value="Unpaid">Unpaid</option>
+        <option value="Paid">Paid</option>
+      </select>
+      <button type="submit">Add Tenant</button>
+    </form>
+
+    <h2>Tenant List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>House</th>
+          <th>Rent</th>
+          <th>Phone</th>
+          <th>Due Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tenantList"></tbody>
+    </table>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="tenants.js"></script>
+</body>
+</html>
