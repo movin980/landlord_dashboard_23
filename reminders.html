@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>⏰ Rent Reminders</header>
+  <header>⏰ Payment Reminders</header>
   <nav>
     <a href="index.html">Dashboard</a>
     <a href="tenants.html">Tenants</a>
@@ -14,12 +14,12 @@
     <a href="reports.html">Reports</a>
   </nav>
   <main>
-    <h2>Upcoming & Overdue</h2>
+    <h2>Upcoming Payments</h2>
     <table>
       <thead>
         <tr>
           <th>Name</th>
-          <th>House</th>
+          <th>Phone</th>
           <th>Due Date</th>
           <th>Status</th>
         </tr>
@@ -28,48 +28,7 @@
     </table>
   </main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
-      authDomain: "landlady-63b0b.firebaseapp.com",
-      projectId: "landlady-63b0b",
-      storageBucket: "landlady-63b0b.firebasestorage.app",
-      messagingSenderId: "596849789967",
-      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
-      measurementId: "G-8YKC8R3VRR"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadReminders() {
-      const list = document.getElementById("reminderList");
-      list.innerHTML = "";
-      const snapshot = await getDocs(collection(db, "tenants"));
-      const today = new Date();
-
-      snapshot.forEach(doc => {
-        const t = doc.data();
-        const due = new Date(t.due_date);
-        const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-
-        if (diffDays <= 5 || diffDays < 0) {
-          list.innerHTML += `
-            <tr>
-              <td>${t.name}</td>
-              <td>${t.house_number}</td>
-              <td>${t.due_date}</td>
-              <td class="${t.status.toLowerCase() === 'paid' ? 'status-paid' : 'status-unpaid'}">${t.status}</td>
-            </tr>
-          `;
-        }
-      });
-    }
-
-    loadReminders();
-  </script>
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="reminders.js"></script>
 </body>
 </html>
