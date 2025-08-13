@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Reports</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>📈 Reports</header>
@@ -14,8 +15,49 @@
     <a href="reports.html">Reports</a>
   </nav>
   <main>
-    <h2>Coming soon</h2>
-    <p>We’ll add charts (monthly rent collected, overdue trends) here.</p>
+    <h2>Rent Status Overview</h2>
+    <canvas id="rentChart" width="400" height="200"></canvas>
   </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqLfsIMLig9JN-WvQZ51kM6xmp38gl-Y8",
+      authDomain: "landlady-63b0b.firebaseapp.com",
+      projectId: "landlady-63b0b",
+      storageBucket: "landlady-63b0b.firebasestorage.app",
+      messagingSenderId: "596849789967",
+      appId: "1:596849789967:web:070e8b0d48e4088b6d677a",
+      measurementId: "G-8YKC8R3VRR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadChart() {
+      let paid = 0, unpaid = 0;
+      const snapshot = await getDocs(collection(db, "tenants"));
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.status.toLowerCase() === "paid") paid++;
+        else unpaid++;
+      });
+
+      new Chart(document.getElementById('rentChart'), {
+        type: 'pie',
+        data: {
+          labels: ['Paid', 'Unpaid'],
+          datasets: [{
+            data: [paid, unpaid],
+            backgroundColor: ['#4CAF50', '#F44336']
+          }]
+        }
+      });
+    }
+
+    loadChart();
+  </script>
 </body>
 </html>
